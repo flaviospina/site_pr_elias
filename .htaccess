@@ -1,13 +1,20 @@
-# Se a hospedagem apontar o domínio para a RAIZ do projeto (e não para /public),
-# este arquivo redireciona tudo para a pasta public/.
+# Encaminha todas as requisições para a pasta public/ mantendo o caminho.
+# Funciona quando o domínio aponta para a RAIZ do projeto (inclusive em subpasta,
+# ex.: https://seusite.com.br/site_new/).
 <IfModule mod_rewrite.c>
     RewriteEngine On
-    RewriteRule ^(config|app|database)/ - [F,L]
-    RewriteCond %{REQUEST_URI} !^/public/
+
+    # Bloqueia acesso direto às pastas sensíveis
+    RewriteRule ^(config|app|database)(/|$) - [F,L]
+
+    # Se a requisição ainda não está em /public e não é um arquivo real da raiz,
+    # encaminha internamente para public/ (o !/public/ evita loop e o duplo public/)
+    RewriteCond %{REQUEST_URI} !/public/
+    RewriteCond %{REQUEST_FILENAME} !-f
     RewriteRule ^(.*)$ public/$1 [L]
 </IfModule>
 
-# Protege pastas sensíveis
+# Protege arquivos sensíveis
 <FilesMatch "\.(sql|log)$">
     Require all denied
 </FilesMatch>

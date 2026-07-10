@@ -1,13 +1,13 @@
 # Roteia todas as requisições para o index.php (front controller)
 <IfModule mod_rewrite.c>
     RewriteEngine On
-    RewriteBase /
 
     # Não reescreve arquivos e pastas que existem de verdade (css, js, imagens, uploads)
     RewriteCond %{REQUEST_FILENAME} -f [OR]
     RewriteCond %{REQUEST_FILENAME} -d
     RewriteRule ^ - [L]
 
+    # Sem RewriteBase: mantém o funcionamento correto em subpastas
     RewriteRule ^ index.php [QSA,L]
 </IfModule>
 

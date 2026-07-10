@@ -24,21 +24,48 @@ function e(?string $value): string
     return htmlspecialchars((string) $value, ENT_QUOTES, 'UTF-8');
 }
 
+/**
+ * Caminho web base do site (ex.: "" na raiz, "/site_new" numa subpasta).
+ * É usado tanto para gerar links quanto para o roteador remover o prefixo,
+ * garantindo que os dois fiquem sempre em sincronia — inclusive quando o
+ * site roda numa subpasta e o domínio NÃO aponta direto para /public.
+ */
+function base_path(): string
+{
+    static $bp = null;
+    if ($bp === null) {
+        $configured = (string) config('base_url');
+        if ($configured !== '') {
+            // Usa o caminho definido no config (mais confiável em subpastas)
+            $bp = rtrim(parse_url($configured, PHP_URL_PATH) ?: '', '/');
+        } else {
+            // Auto: pasta do index.php, removendo "/public" do final quando o
+            // domínio aponta para a raiz do projeto e o .htaccess encaminha.
+            $dir = rtrim(str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME'] ?? '/')), '/');
+            if (substr($dir, -7) === '/public') {
+                $dir = substr($dir, 0, -7);
+            }
+            $bp = ($dir === '/' || $dir === '.') ? '' : $dir;
+        }
+    }
+    return $bp;
+}
+
 /** URL base do site (auto-detectada ou definida no config). */
 function base_url(string $path = ''): string
 {
     static $base = null;
     if ($base === null) {
-        $base = rtrim((string) config('base_url'), '/');
-        if ($base === '') {
+        $configured = rtrim((string) config('base_url'), '/');
+        if ($configured !== '') {
+            $base = $configured;
+        } else {
             $https  = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
                 || ($_SERVER['SERVER_PORT'] ?? null) == 443
                 || ($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? '') === 'https';
             $scheme = $https ? 'https' : 'http';
             $host   = $_SERVER['HTTP_HOST'] ?? 'localhost';
-            // Diretório onde o index.php está sendo servido (suporta subpasta)
-            $dir  = rtrim(str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME'] ?? '/')), '/');
-            $base = $scheme . '://' . $host . $dir;
+            $base   = $scheme . '://' . $host . base_path();
         }
     }
     return $base . '/' . ltrim($path, '/');

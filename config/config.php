@@ -16,8 +16,10 @@ return [
         'charset' => 'utf8mb4',
     ],
 
-    // URL base do site, SEM barra no final. Ex.: 'https://eliasjosedasilva.com.br'
-    // Deixe '' (vazio) para detectar automaticamente.
+    // URL base do site, SEM barra no final.
+    //  - Domínio na raiz:      deixe '' (detecção automática)
+    //  - Site numa SUBPASTA:   informe a URL completa, ex.:
+    //      'https://eliasjosedasilva.com.br/site_new'
     'base_url' => '',
 
     // Ambiente: 'production' oculta erros do PHP; 'development' exibe.

@@ -24,12 +24,17 @@ class Router
 
     public function dispatch(string $method, string $uri): void
     {
-        $path = parse_url($uri, PHP_URL_PATH) ?? '/';
+        $path = rawurldecode(parse_url($uri, PHP_URL_PATH) ?? '/');
 
-        // Remove o diretório base quando o site roda em subpasta
-        $scriptDir = rtrim(str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME'] ?? '/')), '/');
-        if ($scriptDir !== '' && str_starts_with($path, $scriptDir)) {
-            $path = substr($path, strlen($scriptDir));
+        // Remove o prefixo base (mesma fonte usada para gerar os links), de modo
+        // que rotas funcionem tanto na raiz quanto numa subpasta (ex.: /site_new).
+        $basePath = base_path();
+        if ($basePath !== '' && str_starts_with($path, $basePath)) {
+            $path = substr($path, strlen($basePath));
+        }
+        // Também tolera o prefixo com "/public" (caso o link tenha sido gerado assim)
+        if (str_starts_with($path, '/public/') || $path === '/public') {
+            $path = substr($path, strlen('/public'));
         }
         $path = '/' . trim($path, '/');
         if ($path !== '/') $path = rtrim($path, '/');
