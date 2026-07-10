@@ -91,6 +91,6 @@ class SettingController extends AdminController
             $this->json(['error' => 'Falha ao salvar o arquivo.'], 500);
         }
 
-        $this->json(['url' => base_url('uploads/' . $name)]);
+        $this->json(['url' => asset_url('uploads/' . $name)]);
     }
 }

@@ -71,6 +71,18 @@ function base_url(string $path = ''): string
     return $base . '/' . ltrim($path, '/');
 }
 
+/**
+ * URL de arquivos estáticos (css, js, uploads).
+ * Quando o site é servido pelo index.php da RAIZ (subpasta em hospedagem
+ * compartilhada), aponta para o caminho físico real "public/..." — que o
+ * servidor entrega diretamente, sem depender de regra de rewrite.
+ */
+function asset_url(string $path): string
+{
+    $prefix = defined('PUBLIC_VIA_ROOT') ? 'public/' : '';
+    return base_url($prefix . ltrim($path, '/'));
+}
+
 /** Redireciona e encerra. */
 function redirect(string $path): void
 {
