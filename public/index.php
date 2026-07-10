@@ -17,6 +17,16 @@ if (PHP_SAPI === 'cli-server') {
 
 require BASE_PATH . '/app/Core/helpers.php';
 
+// Rede de segurança: garante asset_url() mesmo que uma versão antiga de
+// helpers.php ainda esteja no servidor (evita tela branca por função ausente).
+if (!function_exists('asset_url')) {
+    function asset_url(string $path): string
+    {
+        $prefix = defined('PUBLIC_VIA_ROOT') ? 'public/' : '';
+        return base_url($prefix . ltrim($path, '/'));
+    }
+}
+
 // Autoloader PSR-4 simples: App\ → app/
 spl_autoload_register(function (string $class): void {
     if (str_starts_with($class, 'App\\')) {
