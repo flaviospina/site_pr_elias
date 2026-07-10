@@ -1,20 +1,33 @@
-# Encaminha todas as requisições para a pasta public/ mantendo o caminho.
-# Funciona quando o domínio aponta para a RAIZ do projeto (inclusive em subpasta,
-# ex.: https://seusite.com.br/site_new/).
+# =====================================================================
+# Site Pr. Elias — raiz do projeto (funciona na raiz do domínio OU em
+# subpasta, ex.: https://eliasjosedasilva.com.br/site_new/)
+# =====================================================================
+
+# Necessário para o mod_rewrite em muitas hospedagens compartilhadas
+# (sem isso, qualquer RewriteRule gera erro 403 Forbidden)
+Options +SymLinksIfOwnerMatch -Indexes
+
+DirectoryIndex index.php
+
 <IfModule mod_rewrite.c>
     RewriteEngine On
 
-    # Bloqueia acesso direto às pastas sensíveis
-    RewriteRule ^(config|app|database)(/|$) - [F,L]
+    # 1) Bloqueia acesso direto às pastas internas
+    RewriteRule ^(config|app|database)/ - [F]
 
-    # Se a requisição ainda não está em /public e não é um arquivo real da raiz,
-    # encaminha internamente para public/ (o !/public/ evita loop e o duplo public/)
-    RewriteCond %{REQUEST_URI} !/public/
-    RewriteCond %{REQUEST_FILENAME} !-f
-    RewriteRule ^(.*)$ public/$1 [L]
+    # 2) Arquivos que existem de verdade são servidos direto (css, js, imagens)
+    RewriteCond %{REQUEST_FILENAME} -f
+    RewriteRule ^ - [L]
+
+    # 3) Assets e uploads ficam dentro de public/ — mapeia o caminho
+    RewriteRule ^((assets|uploads)/.*)$ public/$1 [L]
+
+    # 4) Todo o resto vai para o front controller da raiz
+    RewriteCond %{REQUEST_URI} !/public/index\.php$
+    RewriteRule ^ index.php [L]
 </IfModule>
 
 # Protege arquivos sensíveis
-<FilesMatch "\.(sql|log)$">
+<FilesMatch "\.(sql|log|md)$">
     Require all denied
 </FilesMatch>

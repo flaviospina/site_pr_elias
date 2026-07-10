@@ -1,13 +1,18 @@
-# Roteia todas as requisições para o index.php (front controller)
+# Usado quando o domínio aponta DIRETAMENTE para a pasta public/
+# (quando aponta para a raiz do projeto, quem age é o .htaccess da raiz)
+
+Options +SymLinksIfOwnerMatch -Indexes
+
+DirectoryIndex index.php
+
 <IfModule mod_rewrite.c>
     RewriteEngine On
 
-    # Não reescreve arquivos e pastas que existem de verdade (css, js, imagens, uploads)
+    # Não reescreve arquivos e pastas reais (css, js, imagens, uploads)
     RewriteCond %{REQUEST_FILENAME} -f [OR]
     RewriteCond %{REQUEST_FILENAME} -d
     RewriteRule ^ - [L]
 
-    # Sem RewriteBase: mantém o funcionamento correto em subpastas
     RewriteRule ^ index.php [QSA,L]
 </IfModule>
 
