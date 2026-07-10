@@ -1,0 +1,13 @@
+# Se a hospedagem apontar o domínio para a RAIZ do projeto (e não para /public),
+# este arquivo redireciona tudo para a pasta public/.
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteRule ^(config|app|database)/ - [F,L]
+    RewriteCond %{REQUEST_URI} !^/public/
+    RewriteRule ^(.*)$ public/$1 [L]
+</IfModule>
+
+# Protege pastas sensíveis
+<FilesMatch "\.(sql|log)$">
+    Require all denied
+</FilesMatch>

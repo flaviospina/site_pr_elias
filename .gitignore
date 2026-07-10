@@ -1,0 +1,11 @@
+# Uploads enviados pelo painel (mantém a pasta, ignora o conteúdo)
+public/uploads/*
+!public/uploads/.gitkeep
+
+# Config com credenciais reais (opcional: mantenha fora do Git em produção)
+# config/config.php
+
+# Sistema
+.DS_Store
+Thumbs.db
+*.log
