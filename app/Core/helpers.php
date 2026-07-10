@@ -80,7 +80,14 @@ function base_url(string $path = ''): string
 function asset_url(string $path): string
 {
     $prefix = defined('PUBLIC_VIA_ROOT') ? 'public/' : '';
-    return base_url($prefix . ltrim($path, '/'));
+    $url    = base_url($prefix . ltrim($path, '/'));
+    // Cache-buster automático: muda a URL quando o arquivo muda,
+    // evitando que navegadores (principalmente no celular) usem CSS/JS antigos
+    $file = BASE_PATH . '/public/' . ltrim($path, '/');
+    if (is_file($file)) {
+        $url .= '?v=' . filemtime($file);
+    }
+    return $url;
 }
 
 /** Redireciona e encerra. */

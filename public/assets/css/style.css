@@ -378,21 +378,133 @@ textarea{resize:vertical}
 .message-item footer{display:flex;gap:8px;margin-top:12px}
 .message-item footer form{display:inline}
 
-/* Responsivo: menu mobile */
+/* ============================================================
+   RESPONSIVO
+   ============================================================ */
+
+/* --- Menu mobile (fundo sólido azul-marinho + overlay escuro) --- */
 @media(max-width:900px){
-  .nav-toggle{display:flex}
-  .site-nav{position:fixed;top:0;right:0;bottom:0;width:78%;max-width:320px;background:#fff;flex-direction:column;align-items:flex-start;padding:80px 28px;gap:8px;transform:translateX(100%);transition:.25s;box-shadow:-10px 0 40px rgba(0,0,0,.15);z-index:55}
-  .site-nav.open{transform:translateX(0)}
-  .site-nav a{width:100%;padding:10px 0;border-bottom:1px solid var(--line)}
-  .admin-sidebar{position:fixed;left:0;top:0;transform:translateX(-100%);transition:.25s;z-index:80}
-  .admin-sidebar.open{transform:translateX(0)}
+  /* o desfoque (backdrop-filter) faz o menu fixed ficar preso DENTRO do
+     cabeçalho e aparecer cortado/transparente — desliga no celular */
+  .site-header{backdrop-filter:none;-webkit-backdrop-filter:none;background:#fff}
+  .nav-toggle{display:flex;position:relative;z-index:75}
+  .site-nav{
+    position:fixed;top:0;right:0;bottom:0;width:82%;max-width:340px;
+    background:var(--navy);              /* fundo SÓLIDO — legível sobre qualquer página */
+    flex-direction:column;align-items:flex-start;
+    padding:76px 26px 26px;gap:2px;overflow-y:auto;
+    transform:translateX(100%);transition:transform .25s ease;
+    z-index:70;
+  }
+  /* overlay escurecendo o resto da página quando o menu abre */
+  .site-nav.open{
+    transform:translateX(0);
+    box-shadow:-12px 0 40px rgba(0,0,0,.45), 0 0 0 100vmax rgba(6,20,35,.55);
+  }
+  .site-nav a{width:100%;padding:13px 2px;color:#fff;font-size:1.02rem;border-bottom:1px solid rgba(255,255,255,.14)}
+  .site-nav a:hover{color:var(--gold-soft)}
+  .site-nav .nav-cart{border-bottom:none;margin-top:8px}
+  /* botão vira X enquanto o menu está aberto */
+  .nav-toggle.open span{background:#fff}
+  .nav-toggle.open span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+  .nav-toggle.open span:nth-child(2){opacity:0}
+  .nav-toggle.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+  body.nav-open{overflow:hidden}       /* trava o scroll da página atrás do menu */
+
+  /* sidebar do admin no celular */
+  .admin-sidebar{position:fixed;left:0;top:0;height:100vh;transform:translateX(-100%);transition:.25s;z-index:80}
+  .admin-sidebar.open{transform:translateX(0);box-shadow:12px 0 40px rgba(0,0,0,.45), 0 0 0 100vmax rgba(6,20,35,.55)}
 }
 @media(min-width:901px){.admin-topbar .nav-toggle{display:none}}
+
+/* --- Tablets e celulares grandes --- */
+@media(max-width:900px){
+  .checkout-layout,.cart-layout{grid-template-columns:1fr}
+  .cart-summary{max-width:none}
+}
+
+/* --- Celulares: cards em UMA coluna e ajustes de conforto --- */
+@media(max-width:640px){
+  .grid{gap:18px}
+  .grid-3{grid-template-columns:1fr}          /* livros, sermões, devocionais, depoimentos */
+  .section{padding:44px 0}
+  .container{padding:0 16px}
+
+  /* hero */
+  .hero-inner{padding:56px 16px}
+  .hero-actions{flex-direction:column}
+  .hero-actions .btn{width:100%}
+  .hero-trust{gap:10px;font-size:.82rem;flex-direction:column;align-items:center}
+  .page-hero{padding:40px 0 34px}
+
+  /* cabeçalho mais compacto */
+  .brand-logo{height:38px}
+  .brand-text strong{font-size:1rem}
+  .brand-text small{display:none}
+
+  /* formulários confortáveis no toque (16px evita zoom automático do iPhone) */
+  input,select,textarea{font-size:16px;padding:12px 14px}
+  .btn{padding:13px 20px}
+  .newsletter-fields{flex-direction:column}
+  .newsletter-fields .btn{width:100%}
+  .newsletter.boxed{padding:22px 18px}
+  .contact-form{padding:20px 16px}
+  .checkout-form fieldset{padding:16px 14px}
+  .form-row{gap:0}
+  .form-row>label{flex:1 1 100%}
+  .form-row label.narrow{flex:1 1 100%}
+
+  /* agenda */
+  .event-row{padding:16px;gap:14px}
+  .event-date{width:58px;height:58px}
+  .event-date strong{font-size:1.3rem}
+
+  /* produto */
+  .product-price strong{font-size:1.6rem}
+  .product-buy{flex-direction:column;align-items:stretch}
+  .product-buy .btn{width:100%}
+  .product-buy label{width:100%}
+  .product-buy input{width:100%}
+
+  /* artigos */
+  .article-body{font-size:1rem}
+  .article-nav{flex-direction:column;gap:10px}
+  .article-nav a{max-width:100%}
+  .article-cta{padding:20px 16px}
+  .about-page-photo img{position:static}
+
+  /* banner de cookies empilhado, botões grandes */
+  .cookie-banner{flex-direction:column;align-items:stretch;gap:12px;padding:16px}
+  .cookie-actions{flex-direction:column-reverse;width:100%}
+  .cookie-actions .btn{width:100%}
+
+  /* rodapé centralizado */
+  .footer-bottom{flex-direction:column;text-align:center;gap:8px}
+  .whatsapp-fab{width:50px;height:50px;bottom:16px;right:16px}
+
+  /* painel admin */
+  .admin-content{padding:14px}
+  .panel{padding:16px 14px}
+  .admin-topbar{padding:12px 14px}
+  .admin-topbar h1{font-size:1.05rem}
+  .stat-grid{grid-template-columns:1fr 1fr;gap:10px}
+  .stat-card{padding:14px}
+  .stat-value{font-size:1.25rem}
+  .form-actions{flex-direction:column}
+  .form-actions .btn{width:100%}
+  .panel-head{flex-direction:column;align-items:flex-start}
+}
+
+/* --- Celulares pequenos: tabela do carrinho vira cartões --- */
 @media(max-width:520px){
   .cart-table thead{display:none}
   .cart-table,.cart-table tbody,.cart-table tr,.cart-table td{display:block;width:100%}
   .cart-table tr{border:1px solid var(--line);border-radius:10px;margin-bottom:12px;padding:8px}
-  .cart-table td{border:none;padding:6px 10px;display:flex;justify-content:space-between}
+  .cart-table td{border:none;padding:6px 10px;display:flex;justify-content:space-between;align-items:center}
   .cart-table td::before{content:attr(data-label);font-weight:600;color:var(--muted)}
   .cart-product{justify-content:flex-start!important}
+  .cart-table input{width:76px}
+  .cart-actions{flex-direction:column}
+  .cart-actions .btn{width:100%}
+  .stat-grid{grid-template-columns:1fr}
 }
