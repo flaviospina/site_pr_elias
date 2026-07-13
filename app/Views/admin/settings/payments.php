@@ -12,8 +12,9 @@
       <label>Public Key<input type="text" name="pay_mercadopago_public_key" value="<?= e(Setting::get('pay_mercadopago_public_key')) ?>"></label>
       <label>Access Token<input type="password" name="pay_mercadopago_access_token" value="<?= e(Setting::get('pay_mercadopago_access_token')) ?>"></label>
     </div>
-    <label class="check"><input type="checkbox" name="pay_mercadopago_sandbox" value="1" <?= Setting::get('pay_mercadopago_sandbox') === '1' ? 'checked' : '' ?>><span>Modo sandbox (teste)</span></label>
-    <p><small>Obtenha as credenciais em: <strong>mercadopago.com.br → Seu negócio → Configurações → Credenciais</strong>.</small></p>
+    <label class="check"><input type="checkbox" name="pay_mercadopago_sandbox" value="1" <?= Setting::get('pay_mercadopago_sandbox') === '1' ? 'checked' : '' ?>><span>Modo teste — exige credenciais de TESTE (começam com <code>TEST-</code>)</span></label>
+    <p><small>Obtenha as credenciais em: <strong>mercadopago.com.br/developers/panel → sua aplicação → Credenciais</strong>. Há duas abas: <strong>Credenciais de teste</strong> (TEST-...) e <strong>Credenciais de produção</strong> (APP_USR-...). Ao salvar, o sistema testa o token automaticamente.<br>
+    ⚠️ Para testar um pagamento, use os <strong>cartões de teste</strong> que aparecem na página das credenciais de teste — e <strong>não use a sua própria conta Mercado Pago como compradora</strong>: o Mercado Pago bloqueia (botão de pagar desabilitado) quando comprador e vendedor são a mesma conta.</small></p>
   </fieldset>
 
   <!-- PIX DIRETO -->

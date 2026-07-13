@@ -96,9 +96,39 @@ class Payment
         );
         if (!$response) return null;
 
-        $data    = json_decode($response, true);
-        $sandbox = Setting::get('pay_mercadopago_sandbox') === '1';
-        return $data[$sandbox ? 'sandbox_init_point' : 'init_point'] ?? $data['init_point'] ?? null;
+        // Sempre usa o init_point oficial. O antigo "sandbox_init_point" foi
+        // descontinuado pelo Mercado Pago: para testar, usam-se credenciais de
+        // TESTE (TEST-...) com este mesmo link.
+        $data = json_decode($response, true);
+        return $data['init_point'] ?? null;
+    }
+
+    /**
+     * Valida um Access Token do Mercado Pago consultando a própria conta.
+     * Retorna [ok => bool, message => string].
+     */
+    public static function mpValidateToken(string $token): array
+    {
+        $ch = curl_init('https://api.mercadopago.com/users/me');
+        curl_setopt_array($ch, [
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_HTTPHEADER     => ['Authorization: Bearer ' . $token],
+            CURLOPT_TIMEOUT        => 10,
+            CURLOPT_SSL_VERIFYPEER => true,
+        ]);
+        $response = curl_exec($ch);
+        $status   = curl_getinfo($ch, CURLINFO_RESPONSE_CODE);
+        curl_close($ch);
+
+        if ($response === false) {
+            return ['ok' => false, 'message' => 'Não foi possível contatar o Mercado Pago (verifique a conexão do servidor).'];
+        }
+        if ($status !== 200) {
+            return ['ok' => false, 'message' => 'O Mercado Pago recusou o Access Token (HTTP ' . $status . '). Confira se copiou o token completo e da aba certa (teste ou produção).'];
+        }
+        $me = json_decode($response, true);
+        $who = trim(($me['first_name'] ?? '') . ' ' . ($me['last_name'] ?? '')) ?: ($me['email'] ?? 'conta');
+        return ['ok' => true, 'message' => 'Token válido — conta: ' . $who . '.'];
     }
 
     private static function httpPost(string $url, string $body, array $headers): ?string

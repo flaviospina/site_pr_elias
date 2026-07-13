@@ -44,6 +44,30 @@ class SettingController extends AdminController
     {
         $this->requireCsrf();
         $this->saveKeys(self::PAYMENT_KEYS);
+
+        // Validação do Mercado Pago: testa o Access Token na própria API
+        // e avisa se as credenciais não batem com o modo escolhido.
+        $mpEnabled = !empty($_POST['pay_mercadopago_enabled']);
+        $mpToken   = trim((string) ($_POST['pay_mercadopago_access_token'] ?? ''));
+        $mpSandbox = !empty($_POST['pay_mercadopago_sandbox']);
+        if ($mpEnabled && $mpToken !== '') {
+            $check = \App\Core\Payment::mpValidateToken($mpToken);
+            if (!$check['ok']) {
+                flash('error', 'Mercado Pago: ' . $check['message']);
+                redirect('admin/pagamentos');
+            }
+            if ($mpSandbox && !str_starts_with($mpToken, 'TEST-')) {
+                flash('error', 'Mercado Pago: o "Modo teste" está marcado, mas o Access Token é de PRODUÇÃO (APP_USR-...). Para testar, cole as credenciais de TESTE (começam com TEST-) — ou desmarque o modo teste para vender de verdade. ' . $check['message']);
+                redirect('admin/pagamentos');
+            }
+            if (!$mpSandbox && str_starts_with($mpToken, 'TEST-')) {
+                flash('error', 'Mercado Pago: o modo teste está DESMARCADO, mas o Access Token é de TESTE (TEST-...). Cole as credenciais de PRODUÇÃO (APP_USR-...) para receber pagamentos reais. ' . $check['message']);
+                redirect('admin/pagamentos');
+            }
+            flash('success', 'Configurações salvas. Mercado Pago conectado ✓ — ' . $check['message']);
+            redirect('admin/pagamentos');
+        }
+
         flash('success', 'Configurações de pagamento salvas com sucesso.');
         redirect('admin/pagamentos');
     }
