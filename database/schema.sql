@@ -266,7 +266,11 @@ INSERT INTO settings (`key`, `value`) VALUES
 ('pay_pix_key_type', 'celular'),
 ('pay_pix_holder', 'Elias José da Silva'),
 ('pay_whatsapp_enabled', '1'),
-('cookie_banner_enabled', '1');
+('cookie_banner_enabled', '1'),
+-- Notificações no celular (Painel > Notificações)
+('telegram_enabled', '0'),
+('telegram_bot_token', ''),
+('telegram_chat_id', '');
 
 -- Livros (imagens da galeria da loja atual)
 INSERT INTO books (title, slug, subtitle, excerpt, description, price, image, featured, badge, sort_order, status) VALUES

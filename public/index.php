@@ -131,6 +131,8 @@ $router->get('/admin/configuracoes',          [App\Controllers\Admin\SettingCont
 $router->post('/admin/configuracoes',         [App\Controllers\Admin\SettingController::class, 'saveGeneral']);
 $router->get('/admin/pagamentos',             [App\Controllers\Admin\SettingController::class, 'payments']);
 $router->post('/admin/pagamentos',            [App\Controllers\Admin\SettingController::class, 'savePayments']);
+$router->get('/admin/notificacoes',           [App\Controllers\Admin\SettingController::class, 'notifications']);
+$router->post('/admin/notificacoes',          [App\Controllers\Admin\SettingController::class, 'saveNotifications']);
 $router->post('/admin/upload',                [App\Controllers\Admin\SettingController::class, 'upload']);
 
 $router->dispatch($_SERVER['REQUEST_METHOD'], $_SERVER['REQUEST_URI'] ?? '/');

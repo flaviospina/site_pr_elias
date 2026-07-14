@@ -167,6 +167,7 @@ class Payment
         \App\Models\Order::setPaymentRef((int) $order['id'], 'mp:' . ($payment['id'] ?? ''));
         $fresh = \App\Models\Order::find((int) $order['id']);
         Mailer::orderPaid($fresh, \App\Models\Order::items((int) $order['id']));
+        Notifier::orderPaid($fresh);
         return ['settled' => true, 'message' => 'Pagamento aprovado confirmado pelo Mercado Pago.'];
     }
 

@@ -83,6 +83,8 @@ class CheckoutController extends Controller
 
         // E-mails: confirmação para o cliente + aviso para o administrador
         \App\Core\Mailer::orderReceived($order, Order::items((int) $order['id']));
+        // Push no celular do administrador (Telegram), se configurado
+        \App\Core\Notifier::orderReceived($order);
 
         // Mercado Pago: redireciona para o checkout seguro do gateway
         if ($method === 'mercadopago') {

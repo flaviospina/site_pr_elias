@@ -35,6 +35,31 @@ class SettingController extends AdminController
         redirect('admin/configuracoes');
     }
 
+    /** Campos da tela "Notificações". */
+    private const NOTIFICATION_KEYS = [
+        'telegram_enabled', 'telegram_bot_token', 'telegram_chat_id',
+    ];
+
+    public function notifications(): void
+    {
+        $this->adminView('admin/settings/notifications', ['pageTitle' => 'Notificações no Celular']);
+    }
+
+    public function saveNotifications(): void
+    {
+        $this->requireCsrf();
+        $this->saveKeys(self::NOTIFICATION_KEYS);
+
+        // Se ativado e preenchido, envia um teste imediato e reporta o resultado
+        if (!empty($_POST['telegram_enabled']) && !empty($_POST['telegram_bot_token']) && !empty($_POST['telegram_chat_id'])) {
+            $res = \App\Core\Notifier::test();
+            flash($res['ok'] ? 'success' : 'error', 'Telegram: ' . $res['message']);
+        } else {
+            flash('success', 'Configurações de notificação salvas.');
+        }
+        redirect('admin/notificacoes');
+    }
+
     public function payments(): void
     {
         $this->adminView('admin/settings/payments', ['pageTitle' => 'Gateways de Pagamento']);

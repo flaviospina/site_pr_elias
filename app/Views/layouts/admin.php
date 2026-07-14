@@ -32,6 +32,7 @@
       <a href="<?= base_url('admin/mensagens') ?>">✉️ Mensagens</a>
       <a href="<?= base_url('admin/inscritos') ?>">👥 Inscritos</a>
       <span class="admin-nav-label">Sistema</span>
+      <a href="<?= base_url('admin/notificacoes') ?>">📲 Notificações</a>
       <a href="<?= base_url('admin/configuracoes') ?>">⚙️ Configurações</a>
       <a href="<?= base_url('admin/usuarios') ?>">🔐 Usuários</a>
     </nav>
