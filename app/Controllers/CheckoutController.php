@@ -81,6 +81,9 @@ class CheckoutController extends Controller
         Cart::clear();
         unset($_SESSION['_old']);
 
+        // E-mails: confirmação para o cliente + aviso para o administrador
+        \App\Core\Mailer::orderReceived($order, Order::items((int) $order['id']));
+
         // Mercado Pago: redireciona para o checkout seguro do gateway
         if ($method === 'mercadopago') {
             $orderItems = Order::items((int) $order['id']);
@@ -102,12 +105,53 @@ class CheckoutController extends Controller
             (new PageController())->notFound();
             return;
         }
+
+        // Pedido Mercado Pago ainda pendente: confere na API se já foi aprovado.
+        // (confirmação segura, feita servidor-a-servidor — nunca pela URL)
+        if ($order['payment_method'] === 'mercadopago' && $order['status'] === 'pending') {
+            $paymentId = $_GET['payment_id'] ?? $_GET['collection_id'] ?? null;
+            $payment   = $paymentId ? Payment::mpGetPayment((string) $paymentId) : null;
+            $result    = Payment::settleMercadoPagoOrder($order, $payment);
+            if ($result['settled']) {
+                $order = Order::findByCode($code); // recarrega com o novo status
+            }
+        }
+
         $this->view('checkout/confirmation', [
             'pageTitle'     => 'Pedido ' . $order['order_code'],
             'order'         => $order,
             'items'         => Order::items((int) $order['id']),
-            // Indicação visual de retorno do gateway (a confirmação real é feita no painel)
             'gatewayReturn' => isset($_GET['pago']) ? 'success' : (isset($_GET['falha']) ? 'failure' : null),
         ]);
+    }
+
+    /**
+     * Webhook do Mercado Pago: chamado automaticamente pelo gateway quando o
+     * pagamento muda de situação. Confirma o pedido sem depender do cliente
+     * voltar ao site.
+     */
+    public function mpWebhook(): void
+    {
+        $raw  = file_get_contents('php://input') ?: '';
+        $body = json_decode($raw, true) ?: [];
+
+        // Formatos aceitos: JSON {type:"payment",data:{id}} e query ?topic=payment&id=...
+        $type      = $body['type'] ?? $_GET['type'] ?? $_GET['topic'] ?? '';
+        $paymentId = $body['data']['id'] ?? $_GET['data_id'] ?? $_GET['id'] ?? null;
+
+        if ($paymentId && ($type === 'payment' || $type === '')) {
+            $payment = Payment::mpGetPayment((string) $paymentId);
+            if ($payment && !empty($payment['external_reference'])) {
+                $order = Order::findByCode($payment['external_reference']);
+                if ($order) {
+                    Payment::settleMercadoPagoOrder($order, $payment);
+                }
+            }
+        }
+
+        // Sempre responde 200 para o Mercado Pago não reenviar indefinidamente
+        http_response_code(200);
+        header('Content-Type: text/plain');
+        exit('ok');
     }
 }

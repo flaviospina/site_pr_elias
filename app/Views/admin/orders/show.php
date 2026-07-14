@@ -30,6 +30,12 @@ $statusLabels = ['pending' => 'Aguardando pagamento', 'paid' => 'Pago', 'shipped
       <p>Método: <strong><?= e($order['payment_method'] ?? '—') ?></strong><br>
       <?= $order['payment_ref'] ? 'Ref.: ' . e($order['payment_ref']) . '<br>' : '' ?>
       Data: <?= date_br($order['created_at'], true) ?></p>
+      <?php if ($order['payment_method'] === 'mercadopago' && $order['status'] === 'pending'): ?>
+      <form method="post" action="<?= base_url('admin/pedidos/' . (int) $order['id'] . '/verificar-mp') ?>">
+        <?= Csrf::field() ?>
+        <button class="btn btn-primary btn-sm" type="submit">🔄 Verificar pagamento no Mercado Pago</button>
+      </form>
+      <?php endif; ?>
       <?php if ($order['notes']): ?><p><strong>Observações:</strong> <?= e($order['notes']) ?></p><?php endif; ?>
     </div>
   </div>

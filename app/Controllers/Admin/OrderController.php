@@ -29,6 +29,18 @@ class OrderController extends AdminController
         ]);
     }
 
+    /** Consulta o Mercado Pago e confirma o pedido se o pagamento foi aprovado. */
+    public function verifyMp(string $id): void
+    {
+        $this->requireCsrf();
+        $order = Order::find((int) $id);
+        if (!$order) redirect('admin/pedidos');
+
+        $result = \App\Core\Payment::settleMercadoPagoOrder($order);
+        flash($result['settled'] ? 'success' : 'error', 'Mercado Pago: ' . $result['message']);
+        redirect('admin/pedidos/' . (int) $id);
+    }
+
     public function updateStatus(string $id): void
     {
         $this->requireCsrf();

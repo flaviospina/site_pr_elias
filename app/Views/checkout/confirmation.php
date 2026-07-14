@@ -9,8 +9,10 @@
 <section class="section">
   <div class="container article-page">
 
-    <?php if (($gatewayReturn ?? null) === 'success'): ?>
-      <div class="alert alert-success">Pagamento recebido pelo gateway! Assim que for confirmado, você receberá o aviso de envio.</div>
+    <?php if (in_array($order['status'], ['paid', 'shipped', 'completed'], true)): ?>
+      <div class="alert alert-success">✅ Pagamento confirmado! Enviamos o comprovante para o seu e-mail. Em breve você receberá o aviso de envio.</div>
+    <?php elseif (($gatewayReturn ?? null) === 'success'): ?>
+      <div class="alert alert-success">Pagamento recebido pelo gateway! Assim que for confirmado, você receberá o aviso por e-mail.</div>
     <?php elseif (($gatewayReturn ?? null) === 'failure'): ?>
       <div class="alert alert-error">O pagamento não foi concluído. Você pode tentar novamente ou falar conosco pelo WhatsApp.</div>
     <?php endif; ?>

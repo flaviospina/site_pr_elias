@@ -86,6 +86,8 @@ $router->post('/carrinho/remover',     [App\Controllers\CartController::class, '
 $router->get('/finalizar-compra',      [App\Controllers\CheckoutController::class, 'index']);
 $router->post('/finalizar-compra',     [App\Controllers\CheckoutController::class, 'place']);
 $router->get('/pedido/{code}',         [App\Controllers\CheckoutController::class, 'confirmation']);
+$router->get('/webhook/mercadopago',   [App\Controllers\CheckoutController::class, 'mpWebhook']);
+$router->post('/webhook/mercadopago',  [App\Controllers\CheckoutController::class, 'mpWebhook']);
 
 // --- Páginas institucionais (LGPD) ---
 $router->get('/pagina/{slug}', [App\Controllers\PageController::class, 'show']);
@@ -118,6 +120,7 @@ foreach ([
 $router->get('/admin/pedidos',                [App\Controllers\Admin\OrderController::class, 'index']);
 $router->get('/admin/pedidos/{id}',           [App\Controllers\Admin\OrderController::class, 'show']);
 $router->post('/admin/pedidos/{id}/status',   [App\Controllers\Admin\OrderController::class, 'updateStatus']);
+$router->post('/admin/pedidos/{id}/verificar-mp', [App\Controllers\Admin\OrderController::class, 'verifyMp']);
 $router->post('/admin/pedidos/{id}/excluir',  [App\Controllers\Admin\OrderController::class, 'delete']);
 $router->get('/admin/mensagens',              [App\Controllers\Admin\MessageController::class, 'index']);
 $router->post('/admin/mensagens/{id}/lida',   [App\Controllers\Admin\MessageController::class, 'markRead']);
