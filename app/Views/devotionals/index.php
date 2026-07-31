@@ -1,10 +1,8 @@
 <?php use App\Core\Csrf; ?>
-<section class="page-hero">
-  <div class="container">
-    <h1>Devocionais</h1>
-    <p>Reflexões bíblicas diárias para fortalecer a sua caminhada com Deus.</p>
-  </div>
-</section>
+<?php render_banner('devocionais', [
+    'title'    => 'Devocionais',
+    'subtitle' => 'Reflexões bíblicas diárias para fortalecer a sua caminhada com Deus.',
+]); ?>
 
 <section class="section">
   <div class="container">

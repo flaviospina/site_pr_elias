@@ -90,6 +90,41 @@ function asset_url(string $path): string
     return $url;
 }
 
+/**
+ * Renderiza o banner do topo de uma página, combinando a config do admin
+ * (tabela banners) com os padrões da própria página. Se não houver banner
+ * configurado, mostra a faixa padrão com o título informado.
+ *
+ * @param array $defaults ['title','subtitle','kicker','trust'=>[]]
+ */
+function render_banner(string $location, array $defaults = []): void
+{
+    $saved = \App\Models\Banner::get($location);
+    // Banner desativado explicitamente → usa só os padrões (faixa simples)
+    $on = !$saved || (int) ($saved['enabled'] ?? 1) === 1;
+
+    $b = [
+        'image'        => $on ? ($saved['image'] ?? null ?: ($defaults['image'] ?? null)) : null,
+        'title'        => ($on && !empty($saved['title'])) ? $saved['title'] : ($defaults['title'] ?? ''),
+        'subtitle'     => ($on && !empty($saved['subtitle'])) ? $saved['subtitle'] : ($defaults['subtitle'] ?? ''),
+        'kicker'       => ($on && !empty($saved['title'])) ? '' : ($defaults['kicker'] ?? ''),
+        'button_text'  => $on ? ($saved['button_text'] ?? '') : '',
+        'button_url'   => $on ? ($saved['button_url'] ?? '') : '',
+        'button2_text' => $on ? ($saved['button2_text'] ?? '') : '',
+        'button2_url'  => $on ? ($saved['button2_url'] ?? '') : '',
+        'overlay'      => $saved['overlay'] ?? 70,
+        'text_color'   => $saved['text_color'] ?? 'light',
+        'align'        => $saved['align'] ?? 'center',
+        'height'       => $saved['height'] ?? ($defaults['height'] ?? 'medium'),
+        'trust'        => $defaults['trust'] ?? [],
+    ];
+    // Se a página trouxe kicker padrão e não há título custom, mantém o kicker
+    if (!empty($defaults['kicker']) && (!$saved || empty($saved['title']))) {
+        $b['kicker'] = $defaults['kicker'];
+    }
+    require BASE_PATH . '/app/Views/partials/banner.php';
+}
+
 /** Redireciona e encerra. */
 function redirect(string $path): void
 {

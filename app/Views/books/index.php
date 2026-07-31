@@ -1,15 +1,13 @@
 <?php use App\Core\Csrf; ?>
-<section class="page-hero">
-  <div class="container">
-    <h1>Livros do Pr. Elias</h1>
-    <p>Obras para fortalecer a fé, aprofundar o conhecimento das Escrituras e edificar a igreja.</p>
-    <div class="hero-trust dark">
-      <span>🔒 Compra 100% segura</span>
-      <span>✔ Garantia de <?= e($settings['guarantee_days'] ?? '7') ?> dias</span>
-      <span>🚚 Envio para todo o Brasil</span>
-    </div>
-  </div>
-</section>
+<?php render_banner('livros', [
+    'title'    => 'Livros do Pr. Elias',
+    'subtitle' => 'Obras para fortalecer a fé, aprofundar o conhecimento das Escrituras e edificar a igreja.',
+    'trust'    => [
+        '🔒 Compra 100% segura',
+        '✔ Garantia de ' . ($settings['guarantee_days'] ?? '7') . ' dias',
+        '🚚 Envio para todo o Brasil',
+    ],
+]); ?>
 
 <section class="section">
   <div class="container">

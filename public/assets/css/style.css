@@ -508,3 +508,48 @@ textarea{resize:vertical}
   .cart-actions .btn{width:100%}
   .stat-grid{grid-template-columns:1fr}
 }
+
+/* ============================================================
+   BANNERS CONFIGURÁVEIS (topo das páginas)
+   ============================================================ */
+.site-banner{background:var(--navy);color:#fff;background-size:cover;background-position:center}
+.site-banner-inner{max-width:860px;margin:0 auto;padding:64px 22px;text-align:inherit}
+.site-banner h1{color:#fff;margin:0 0 12px;font-size:clamp(1.9rem,4vw,3rem)}
+.site-banner .hero-subtitle{margin:0 auto}
+.site-banner .hero-actions{margin-top:24px}
+.site-banner .hero-trust{margin-top:22px}
+/* altura */
+.banner-h-small  .site-banner-inner{padding:38px 22px}
+.banner-h-medium .site-banner-inner{padding:64px 22px}
+.banner-h-large  .site-banner-inner{padding:100px 22px}
+/* alinhamento */
+.banner-align-center{text-align:center}
+.banner-align-center .site-banner-inner{margin-left:auto;margin-right:auto}
+.banner-align-center .hero-actions,.banner-align-center .hero-trust{justify-content:center}
+.banner-align-left{text-align:left}
+.banner-align-left .site-banner-inner{margin-left:0;margin-right:auto}
+.banner-align-left .hero-actions,.banner-align-left .hero-trust{justify-content:flex-start}
+.banner-align-left .hero-subtitle{margin-left:0}
+/* cor do texto */
+.banner-text-dark,.banner-text-dark h1{color:var(--navy)}
+.banner-text-dark .hero-kicker{color:var(--gold-2)}
+.banner-text-dark .hero-subtitle{color:var(--muted)}
+.banner-plain.banner-text-dark{background:var(--bg-alt)}
+
+@media(max-width:640px){
+  .banner-h-large .site-banner-inner{padding:56px 18px}
+  .banner-h-medium .site-banner-inner{padding:44px 18px}
+  .site-banner .hero-actions{flex-direction:column}
+  .site-banner .hero-actions .btn{width:100%}
+}
+
+/* Prévia do banner no admin */
+.banner-preview{position:relative;border:1px solid var(--line);border-radius:10px;overflow:hidden;
+  background:var(--navy);background-size:cover;background-position:center;min-height:240px;display:flex;align-items:center;margin-bottom:8px}
+.banner-preview .bnp-overlay{position:absolute;inset:0;background:rgba(10,37,64,.7)}
+.banner-preview.has-image .bnp-overlay{display:block}
+.banner-preview:not(.has-image) .bnp-overlay{background:transparent}
+.bnp-content{position:relative;z-index:2;width:100%;padding:28px;color:#fff}
+.bnp-content h3{color:inherit;margin:0 0 8px;font-size:1.7rem;font-family:var(--serif)}
+.bnp-content p{color:inherit;opacity:.92;margin:0}
+.bnp-buttons{display:inline-flex;gap:8px;margin-top:14px;flex-wrap:wrap}

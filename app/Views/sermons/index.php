@@ -1,9 +1,7 @@
-<section class="page-hero">
-  <div class="container">
-    <h1>Sermões</h1>
-    <p>Pregações expositivas, fiéis às Escrituras, para edificação da igreja.</p>
-  </div>
-</section>
+<?php render_banner('sermoes', [
+    'title'    => 'Sermões',
+    'subtitle' => 'Pregações expositivas, fiéis às Escrituras, para edificação da igreja.',
+]); ?>
 
 <section class="section">
   <div class="container">

@@ -1,9 +1,7 @@
-<section class="page-hero">
-  <div class="container">
-    <h1>Agenda</h1>
-    <p>Acompanhe os próximos compromissos, cultos e conferências do Pr. Elias.</p>
-  </div>
-</section>
+<?php render_banner('agenda', [
+    'title'    => 'Agenda',
+    'subtitle' => 'Acompanhe os próximos compromissos, cultos e conferências do Pr. Elias.',
+]); ?>
 
 <section class="section">
   <div class="container">

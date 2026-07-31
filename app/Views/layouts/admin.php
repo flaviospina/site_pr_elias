@@ -28,6 +28,7 @@
       <a href="<?= base_url('admin/devocionais') ?>">📖 Devocionais</a>
       <a href="<?= base_url('admin/agenda') ?>">📅 Agenda</a>
       <a href="<?= base_url('admin/paginas') ?>">📄 Páginas</a>
+      <a href="<?= base_url('admin/banners') ?>">🖼️ Banners</a>
       <span class="admin-nav-label">Comunicação</span>
       <a href="<?= base_url('admin/mensagens') ?>">✉️ Mensagens</a>
       <a href="<?= base_url('admin/inscritos') ?>">👥 Inscritos</a>

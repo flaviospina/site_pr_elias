@@ -152,6 +152,9 @@ $router->post('/admin/mensagens/{id}/lida',   [App\Controllers\Admin\MessageCont
 $router->post('/admin/mensagens/{id}/excluir',[App\Controllers\Admin\MessageController::class, 'delete']);
 $router->get('/admin/inscritos',              [App\Controllers\Admin\MessageController::class, 'subscribers']);
 $router->post('/admin/inscritos/{id}/excluir',[App\Controllers\Admin\MessageController::class, 'deleteSubscriber']);
+$router->get('/admin/banners',                [App\Controllers\Admin\BannerController::class, 'index']);
+$router->get('/admin/banners/{location}/editar', [App\Controllers\Admin\BannerController::class, 'edit']);
+$router->post('/admin/banners/salvar',        [App\Controllers\Admin\BannerController::class, 'save']);
 $router->get('/admin/configuracoes',          [App\Controllers\Admin\SettingController::class, 'general']);
 $router->post('/admin/configuracoes',         [App\Controllers\Admin\SettingController::class, 'saveGeneral']);
 $router->get('/admin/pagamentos',             [App\Controllers\Admin\SettingController::class, 'payments']);

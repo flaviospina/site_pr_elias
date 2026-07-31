@@ -1,10 +1,8 @@
 <?php use App\Core\Csrf; ?>
-<section class="page-hero">
-  <div class="container">
-    <h1>Contato</h1>
-    <p>Estamos à disposição para orar com você, tirar dúvidas ou conversar sobre os trabalhos do ministério.</p>
-  </div>
-</section>
+<?php render_banner('contato', [
+    'title'    => 'Contato',
+    'subtitle' => 'Estamos à disposição para orar com você, tirar dúvidas ou conversar sobre os trabalhos do ministério.',
+]); ?>
 
 <section class="section">
   <div class="container contact-grid">

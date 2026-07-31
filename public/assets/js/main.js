@@ -86,6 +86,7 @@
         .then(function (json) {
           if (json.url && target) {
             target.value = json.url;
+            target.dispatchEvent(new Event('input', { bubbles: true }));
             if (status) status.textContent = '✓ Imagem enviada';
           } else {
             if (status) status.textContent = json.error || 'Falha no envio';
@@ -94,6 +95,46 @@
         .catch(function () { if (status) status.textContent = 'Falha no envio'; });
     });
   });
+
+  // --- Prévia ao vivo do banner (admin) ---
+  var preview = document.querySelector('[data-bn-preview]');
+  if (preview) {
+    var form = preview.closest('form');
+    var overlayEl = preview.querySelector('[data-bn-overlay]');
+    var contentEl = preview.querySelector('[data-bn-content]');
+    function val(name) { var el = form.querySelector('[data-bn="' + name + '"]'); return el ? el.value : ''; }
+    function updatePreview() {
+      var img = val('image');
+      preview.style.backgroundImage = img ? "url('" + img.replace(/'/g, "%27") + "')" : 'none';
+      preview.classList.toggle('has-image', !!img);
+      var op = (parseInt(val('overlay'), 10) || 0) / 100;
+      overlayEl.style.background = 'rgba(10,37,64,' + op + ')';
+      var h = { small: '160px', medium: '240px', large: '340px' }[val('height')] || '240px';
+      preview.style.minHeight = h;
+      contentEl.style.textAlign = val('align') || 'center';
+      contentEl.style.color = val('text_color') === 'dark' ? '#0A2540' : '#fff';
+      [['title', 'title'], ['subtitle', 'subtitle'], ['button_text', 'button_text'], ['button2_text', 'button2_text']]
+        .forEach(function (pair) {
+          var view = preview.querySelector('[data-bn-view="' + pair[1] + '"]');
+          if (!view) return;
+          var v = val(pair[0]);
+          view.textContent = v;
+          view.hidden = !v;
+        });
+    }
+    form.querySelectorAll('[data-bn]').forEach(function (el) {
+      el.addEventListener('input', updatePreview);
+      el.addEventListener('change', updatePreview);
+    });
+    updatePreview();
+    // Atualiza a prévia quando uma imagem é enviada pelo upload
+    var imgInput = form.querySelector('[data-upload-target]');
+    if (imgInput) {
+      var obs = new MutationObserver(updatePreview);
+      obs.observe(imgInput, { attributes: true, attributeFilter: ['value'] });
+      imgInput.addEventListener('input', updatePreview);
+    }
+  }
 
   function baseUploadUrl() {
     // Deriva a URL de /admin/upload a partir do caminho atual

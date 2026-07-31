@@ -1,9 +1,7 @@
-<section class="page-hero">
-  <div class="container">
-    <p class="hero-kicker"><?= e($settings['site_tagline'] ?? '') ?></p>
-    <h1>Pr. Elias José da Silva</h1>
-  </div>
-</section>
+<?php render_banner('sobre-o-pr', [
+    'kicker' => $settings['site_tagline'] ?? '',
+    'title'  => 'Pr. Elias José da Silva',
+]); ?>
 
 <section class="section">
   <div class="container about-page">

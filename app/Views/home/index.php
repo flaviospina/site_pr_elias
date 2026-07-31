@@ -1,22 +1,18 @@
 <?php use App\Core\Cart; use App\Core\Csrf; ?>
 
-<!-- HERO -->
-<section class="hero" style="background-image:linear-gradient(rgba(10,37,64,.78),rgba(10,37,64,.88)),url('<?= e($settings['hero_image'] ?? '') ?>')">
-  <div class="container hero-inner">
-    <p class="hero-kicker"><?= e($settings['site_tagline'] ?? '') ?></p>
-    <h1><?= e($settings['hero_title'] ?? '') ?></h1>
-    <p class="hero-subtitle"><?= e($settings['hero_subtitle'] ?? '') ?></p>
-    <div class="hero-actions">
-      <a class="btn btn-gold btn-lg" href="<?= base_url('livros') ?>">📚 Conhecer os livros</a>
-      <a class="btn btn-ghost btn-lg" href="<?= base_url('sermoes') ?>">Ler os sermões</a>
-    </div>
-    <div class="hero-trust">
-      <span>🔒 Compra 100% segura</span>
-      <span>✔ Garantia de <?= e($settings['guarantee_days'] ?? '7') ?> dias</span>
-      <span>🚚 Envio para todo o Brasil</span>
-    </div>
-  </div>
-</section>
+<!-- BANNER PRINCIPAL (configurável em Painel > Banners) -->
+<?php render_banner('home', [
+    'kicker'   => $settings['site_tagline'] ?? '',
+    'title'    => $settings['hero_title'] ?? '',
+    'subtitle' => $settings['hero_subtitle'] ?? '',
+    'image'    => $settings['hero_image'] ?? '',
+    'height'   => 'large',
+    'trust'    => [
+        '🔒 Compra 100% segura',
+        '✔ Garantia de ' . ($settings['guarantee_days'] ?? '7') . ' dias',
+        '🚚 Envio para todo o Brasil',
+    ],
+]); ?>
 
 <!-- LIVROS EM DESTAQUE -->
 <?php if ($books): ?>
