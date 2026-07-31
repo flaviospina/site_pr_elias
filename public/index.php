@@ -36,13 +36,31 @@ spl_autoload_register(function (string $class): void {
 });
 
 // Erros: ocultos em produção
-if (config('env') === 'development') {
+$isDev = config('env') === 'development';
+if ($isDev) {
     ini_set('display_errors', '1');
     error_reporting(E_ALL);
 } else {
     ini_set('display_errors', '0');
     error_reporting(E_ALL & ~E_DEPRECATED);
 }
+
+// Tratador global: transforma erro fatal em mensagem clara + registro no log,
+// em vez de "tela branca" (HTTP 500 sem conteúdo).
+set_exception_handler(function (\Throwable $e) use ($isDev) {
+    http_response_code(500);
+    error_log('[EJDS] ' . $e->getMessage() . ' em ' . $e->getFile() . ':' . $e->getLine());
+    if ($isDev) {
+        echo '<pre style="padding:20px;font:14px monospace;color:#b23b3b">'
+           . 'ERRO: ' . htmlspecialchars($e->getMessage()) . "\n"
+           . htmlspecialchars($e->getFile()) . ':' . $e->getLine() . "\n\n"
+           . htmlspecialchars($e->getTraceAsString()) . '</pre>';
+    } else {
+        echo 'Ocorreu um erro interno. Se você é o administrador, ative \'env\' => \'development\' '
+           . 'no config/config.php para ver o detalhe, ou verifique o log de erros do cPanel.';
+    }
+    exit;
+});
 
 // Cabeçalhos de segurança
 header('X-Frame-Options: SAMEORIGIN');

@@ -11,11 +11,29 @@ abstract class Controller
     {
         $data['settings'] = $data['settings'] ?? Setting::all();
         extract($data, EXTR_SKIP);
-        $viewFile = BASE_PATH . '/app/Views/' . $view . '.php';
+        $viewFile   = BASE_PATH . '/app/Views/' . $view . '.php';
+        $layoutFile = BASE_PATH . '/app/Views/layouts/' . $layout . '.php';
+        self::ensureFile($viewFile, "app/Views/{$view}.php");
+        self::ensureFile($layoutFile, "app/Views/layouts/{$layout}.php");
         ob_start();
         require $viewFile;
         $content = ob_get_clean();
-        require BASE_PATH . '/app/Views/layouts/' . $layout . '.php';
+        require $layoutFile;
+    }
+
+    /** Aborta com mensagem clara se um arquivo de view não existir (upload incompleto). */
+    private static function ensureFile(string $path, string $relative): void
+    {
+        if (!is_file($path)) {
+            http_response_code(500);
+            $msg = 'Arquivo não encontrado no servidor: ' . $relative
+                . '. Reenvie este arquivo por FTP para a hospedagem.';
+            if (config('env') === 'development') {
+                exit($msg);
+            }
+            error_log('[EJDS] ' . $msg);
+            exit('Erro: um arquivo do site não foi encontrado (' . $relative . '). Reenvie-o por FTP.');
+        }
     }
 
     /** Renderiza uma view sem layout (parciais/ajax). */
