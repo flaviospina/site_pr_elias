@@ -30,8 +30,15 @@ if (!function_exists('asset_url')) {
 // Autoloader PSR-4 simples: App\ → app/
 spl_autoload_register(function (string $class): void {
     if (str_starts_with($class, 'App\\')) {
-        $file = BASE_PATH . '/app/' . str_replace('\\', '/', substr($class, 4)) . '.php';
-        if (is_file($file)) require $file;
+        $relative = 'app/' . str_replace('\\', '/', substr($class, 4)) . '.php';
+        $file = BASE_PATH . '/' . $relative;
+        if (is_file($file)) {
+            require $file;
+        } else {
+            // Arquivo ausente no servidor (upload incompleto): mensagem clara
+            throw new \RuntimeException('Arquivo não encontrado no servidor: ' . $relative
+                . '. Reenvie este arquivo por FTP (verifique também maiúsculas/minúsculas do nome).');
+        }
     }
 });
 
