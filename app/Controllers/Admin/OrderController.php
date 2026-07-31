@@ -44,8 +44,23 @@ class OrderController extends AdminController
     public function updateStatus(string $id): void
     {
         $this->requireCsrf();
-        Order::updateStatus((int) $id, $_POST['status'] ?? '');
-        flash('success', 'Status do pedido atualizado.');
+        $order     = Order::find((int) $id);
+        $newStatus = $_POST['status'] ?? '';
+        if (!$order) redirect('admin/pedidos');
+
+        $wasPaid = in_array($order['status'], ['paid', 'shipped', 'completed'], true);
+        Order::updateStatus((int) $id, $newStatus);
+
+        // Ao confirmar o pagamento manualmente (ex.: PIX após receber o
+        // comprovante), avisa o cliente por e-mail e o admin pelo Telegram.
+        if ($newStatus === 'paid' && !$wasPaid) {
+            $fresh = Order::find((int) $id);
+            \App\Core\Mailer::orderPaid($fresh, Order::items((int) $id));
+            \App\Core\Notifier::orderPaid($fresh);
+            flash('success', 'Pedido confirmado como PAGO. O cliente foi avisado por e-mail.');
+        } else {
+            flash('success', 'Status do pedido atualizado.');
+        }
         redirect('admin/pedidos/' . (int) $id);
     }
 
