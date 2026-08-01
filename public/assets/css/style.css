@@ -297,6 +297,8 @@ textarea{resize:vertical}
 
 /* Banner de cookies (LGPD) */
 .cookie-banner{position:fixed;bottom:0;left:0;right:0;z-index:70;background:#fff;border-top:3px solid var(--gold);box-shadow:0 -8px 30px rgba(10,37,64,.16);padding:18px 22px;display:flex;align-items:center;gap:22px;justify-content:space-between;flex-wrap:wrap}
+/* O atributo hidden precisa vencer o display:flex acima (mesma especificidade) */
+.cookie-banner[hidden]{display:none}
 .cookie-text{max-width:720px}
 .cookie-text strong{color:var(--navy)}
 .cookie-text p{margin:4px 0 0;font-size:.86rem;color:var(--muted)}
